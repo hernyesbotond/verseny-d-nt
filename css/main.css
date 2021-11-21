@@ -1,0 +1,72 @@
+html{
+    scroll-behavior: smooth;
+    position: relative;
+    height: 520px;
+}
+
+body{
+    position: absolute;
+    top: 25%;
+    left: 50%;
+    -ms-transform: translate(-50%);
+    transform: translate(-50%);
+	background:#CCCCCC;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.tolto{
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #CCCCCC;
+}
+
+.menu_doboz{
+	margin:0px auto;
+	width:500px;
+	padding:10px;
+	text-align:center;
+	overflow:auto;
+}
+
+.csapatnev{
+	font-size:6vw;
+	margin:5px;
+	overflow:auto;
+}
+
+.felirat_doboz{
+	font-size:2vw;
+	font-style:italic;
+	margin:5px;
+	overflow:auto;
+}
+
+.gomb_doboz{
+	margin:5px;
+	padding:20px;
+	overflow:auto;
+}
+
+form{
+	margin:0px;
+}
+
+.feladat_gomb{
+	width:100%;
+	font-weight: 500;
+	background-color: white;
+	cursor:pointer;
+	margin-bottom:10px;
+	height:40px;
+	border-style: none;
+}
+
+.jatek {
+	color: white;
+	background-color: dodgerblue;
+}
+
+@media only screen and (max-width: 550px){
+	.menu_doboz{ width: auto !important;}
+}

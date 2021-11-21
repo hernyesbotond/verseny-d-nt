@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<head>
+		<title>Hatodik Feladat &#129421;&#128563;</title>
+	
+		<script src="jquery/jquery-1.8.2.js" type="text/javascript">
+		</script>
+		
+		<script src="jquery/jquery-ui-1.9.1.custom.js" type="text/javascript">
+		</script>
+		
+		<link rel="stylesheet" href="jquery/jquery-ui-1.9.1.custom.css" type="text/css">
+
+		<link rel="stylesheet" href="css/feladat2.css" type="text/css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+		<link rel="apple-touch-icon" href="images/favicon.ico">
+		
+	</head>
+    <body>
+        <div class="doboz">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" oninput="usernameChanged(this.value)"><br>
+            <div class="jelszo_doboz"></div>
+            <button id="loginbutton" disabled="true">Jelszó küldése</button>
+        </div>
+
+		<script>
+            var jelszo;
+            var nev;
+            $(document).ready(
+            function()
+            {
+                $("#loginbutton").click(
+                function()
+                {
+                    bejelentkezes(nev, jelszo);
+                });
+            });
+            
+            function usernameChanged(newtext)
+			{
+                nev = newtext;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange=function() {
+					if (this.readyState == 4 && this.status == 200)
+                    {
+						ansobj=JSON.parse(this.responseText);
+						if (ansobj.status==="success")
+						{
+							mixedpwd=ansobj.data.mixedpwd;
+							saltvalue=ansobj.data.saltvalue;
+                            getOriginalValue(mixedpwd);
+						}
+						else
+						{
+                            $(".jelszo_doboz").empty();
+                            document.getElementById("loginbutton").disabled = true;
+							mixedpwd=null;
+							saltvalue=null;
+						}
+						//pwdChanged(document.getElementById("pwd").value);
+					}
+				};
+				xhttp.open("POST", "http://bitkozpont.mik.uni-pannon.hu/2021/uberchecker.php", true);
+				xhttp.send(JSON.stringify({
+					action: "getuserhelp",
+					username: newtext
+				}));
+			}
+            
+            function bejelentkezes(nev, jelszo)
+			{
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("POST","http://bitkozpont.mik.uni-pannon.hu/2021/uberchecker.php",true);
+				xhttp.send(JSON.stringify({
+					action: "solve",
+					teamcode: "b45e7b1c2ba70abf98f8",
+					username: nev,
+					pwd: jelszo
+				}));
+			}
+
+			function getOriginalValue(mixedpwd)
+			{
+				var maskbase=[45, 65, 3, 65, 78, 105];
+				var mixedvalues = [];
+				for (var i=0; i<mixedpwd.length; i+=2) 
+				{
+					mixedvalues.push(mixedpwd.substr(i, 2));
+				}
+				//console.log(mixedvalues);
+				for (var i = 0; i<mixedvalues.length; i++)
+				{
+					mixedvalues[i] = parseInt(mixedvalues[i], 16);
+				}
+				//console.log(mixedvalues);
+				var tmp = [0,0,0,0];
+				for (var ti=0; ti<4; ti++) {
+					tmp[ti]=mixedvalues.pop(mixedvalues[mixedvalues.length-ti]);
+				}
+				//console.log(tmp);
+				//console.log(mixedvalues);
+
+				for (var i=0; i<4; i++)
+				{
+					mixedvalues.unshift(tmp[i]);
+				}
+				//console.log(mixedvalues);
+
+				var realmask = [];
+				var maskindex = 0;
+				while (realmask.length<mixedvalues.length)
+				{
+					realmask.push(maskbase[maskindex]);
+					maskindex++;
+					if (maskindex>=maskbase.length) maskindex=0;
+				}
+				//console.log(realmask);
+
+				for (var i=0; i<mixedvalues.length; i++)
+					mixedvalues[i]=mixedvalues[i]^realmask[i]; // Good old XOR :)
+				//console.log(mixedvalues);
+
+				while (mixedvalues[mixedvalues.length-1] == 0) { mixedvalues.pop()}
+
+				//console.log(mixedvalues);
+				var result = "";
+				for (var i=0; i<mixedvalues.length; i++)
+				{
+					if( mixedvalues[i] == 10 )
+					{
+						
+					}
+					else { result+=String.fromCharCode(mixedvalues[i]); }
+				}
+				jelszo = result;
+                $(".jelszo_doboz").html("A jelszó: " + jelszo);
+                document.getElementById("loginbutton").disabled = false;
+			}
+
+            function getMixedValue(original, salt)
+			{
+				salt = "" + salt;
+				var mixedvalue=[];
+				for (var i=0; i<original.length; i++)
+					mixedvalue.push(original.charCodeAt(i));
+				for (var i=0; i<mixedvalue.length; i++)
+				{
+					mixedvalue[i]=158-mixedvalue[i];
+				}
+				for (var i=0; i<mixedvalue.length-2; i+=3)
+				{
+					var tmp=mixedvalue[i+2];
+					mixedvalue[i+2]=mixedvalue[i+1];
+					mixedvalue[i+1]=mixedvalue[i];
+					mixedvalue[i]=tmp;
+				}
+				var result="";
+				for (var i=0; i<mixedvalue.length-salt.length; i++)
+				{
+					result+=String.fromCharCode(mixedvalue[i]);
+				}
+				jelszo = result;
+                $(".jelszo_doboz").html("A jelszó: " + jelszo);
+                document.getElementById("loginbutton").disabled = false;
+			}
+
+        </script>
+    </body>
+</html>

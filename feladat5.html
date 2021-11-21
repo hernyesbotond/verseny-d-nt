@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<head>
+		<title>Ötödik Feladat &#129421;&#128563;</title>
+	
+		<script src="jquery/jquery-1.8.2.js" type="text/javascript"></script>
+		
+		<script src="jquery/jquery-ui-1.9.1.custom.js" type="text/javascript"></script>
+		
+		<link rel="stylesheet" href="jquery/jquery-ui-1.9.1.custom.css" type="text/css">
+
+		<link rel="stylesheet" href="css/feladat1.css" type="text/css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+		<link rel="apple-touch-icon" href="images/favicon.ico">
+		
+	</head>
+	
+	<body>
+		<script>
+			//var mixedpwd = "210248333b734e6964206e0b";
+			//var maskbase=[213, 43, 65, 123, 76, 43, 134, 76, 23];
+			var maskbase=[43, 42, 65, 76, 41, 7, 98, 23, 65];
+			//var maskbase=[76, 201, 3, 165];
+			var maskbase=[45, 65, 3, 65, 78, 105];
+			//var maskbase=[7, 9, 3, 235, 76, 176, 127, 189, 167];
+			//var maskbase=[54, 76, 123, 153, 213, 123, 254];
+			//var maskbase=[32, 12, 65, 55, 55, 67, 86];
+			
+			$(document).ready(
+			function()
+			{
+				var mixedpwd = getMixedValue("IamJoker82");
+				getOriginalValue(mixedpwd);
+				getOriginalValue("210248333b734e6964206e0b");
+				getOriginalValue("6e0a4c2f23322f1f486177292b495a2e712d2a486c206d26");
+			});
+
+			function getMixedValue(original)
+			{
+
+				var mixedvalue=[];
+				for (var i=0; i<original.length; i++)
+					mixedvalue.push(original.charCodeAt(i));
+				while (mixedvalue.length%4 != 0)
+					mixedvalue.push(0);
+
+				var realmask=[];
+				var maskindex=0;
+				while (realmask.length<mixedvalue.length)
+				{
+					realmask.push(maskbase[maskindex]);
+					maskindex++;
+					if (maskindex>=maskbase.length) maskindex=0;
+				}
+				//console.log(realmask);
+
+				for (var i=0; i<mixedvalue.length; i++)
+					mixedvalue[i]=mixedvalue[i]^realmask[i]; // Good old XOR :)
+				//console.log(mixedvalue);
+
+				var tmp=[0,0,0,0];
+				for (var ti=0; ti<4; ti++)
+					tmp[ti]=mixedvalue[ti];
+				for (var i=0; i<mixedvalue.length-4; i+=4)
+				{
+					for (var ti=0; ti<4; ti++)
+						mixedvalue[i+ti]=mixedvalue[i+4+ti];
+				}
+				for (var ti=0; ti<4; ti++)
+					mixedvalue[mixedvalue.length-4+ti]=tmp[ti];
+				//console.log(mixedvalue);
+
+				var result="";
+				for (var i=0; i<mixedvalue.length; i++)
+				{
+					result+=mixedvalue[i].toString(16).padStart(2,0);
+				}
+				console.log(result);
+				return result;
+			}
+
+			function getOriginalValue(mixedpwd)
+			{
+				var maskbase=[45, 65, 3, 65, 78, 105];
+				var mixedvalues = [];
+				for (var i=0; i<mixedpwd.length; i+=2) 
+				{
+					mixedvalues.push(mixedpwd.substr(i, 2));
+				}
+				//console.log(mixedvalues);
+				for (var i = 0; i<mixedvalues.length; i++)
+				{
+					mixedvalues[i] = parseInt(mixedvalues[i], 16);
+				}
+				//console.log(mixedvalues);
+				var tmp = [0,0,0,0];
+				for (var ti=0; ti<4; ti++) {
+					tmp[ti]=mixedvalues.pop(mixedvalues[mixedvalues.length-ti]);
+				}
+				//console.log(tmp);
+				//console.log(mixedvalues);
+
+				for (var i=0; i<4; i++)
+				{
+					mixedvalues.unshift(tmp[i]);
+				}
+				//console.log(mixedvalues);
+
+				var realmask = [];
+				var maskindex = 0;
+				while (realmask.length<mixedvalues.length)
+				{
+					realmask.push(maskbase[maskindex]);
+					maskindex++;
+					if (maskindex>=maskbase.length) maskindex=0;
+				}
+				//console.log(realmask);
+
+				for (var i=0; i<mixedvalues.length; i++)
+					mixedvalues[i]=mixedvalues[i]^realmask[i]; // Good old XOR :)
+				//console.log(mixedvalues);
+
+				while (mixedvalues[mixedvalues.length-1] == 0) { mixedvalues.pop()}
+
+				//console.log(mixedvalues);
+				var result = "";
+				for (var i=0; i<mixedvalues.length; i++)
+				{
+					if( mixedvalues[i] == 10 )
+					{
+						
+					}
+					else { result+=String.fromCharCode(mixedvalues[i]); }
+				}
+				console.log(result);
+				bejelentkezes(result);
+				return result;
+			}
+
+			function bejelentkezes(jelszo)
+			{
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("POST","http://bitkozpont.mik.uni-pannon.hu/2021/uberchecker.php",true);
+				xhttp.send(JSON.stringify({
+					action: "solve",
+					teamcode: "b45e7b1c2ba70abf98f8",
+					username: "batman82",
+					pwd: jelszo
+				}));
+			}
+		</script>
+	</body>
+</html>

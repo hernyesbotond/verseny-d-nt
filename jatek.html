@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<head>
+		<title>Játék</title>
+	
+		<script src="jquery/jquery-1.8.2.js" type="text/javascript">
+		</script>
+
+		<script src="jquery/jquery-ui-1.9.1.custom.js" type="text/javascript">
+		</script>
+		
+		<link rel="stylesheet" href="jquery/jquery-ui-1.9.1.custom.css" type="text/css">
+
+		<link rel="stylesheet" href="css/jatek.css" type="text/css">
+		
+		<script type="text/javascript" src="js/jatek.js"></script>
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+		
+		<link rel="apple-touch-icon" href="images/favicon.ico">
+		
+	</head>
+	<body>
+		<table id="tabla" border="1"></table>
+
+		<div id="valasztodoboz">
+			<div id="valassztxt">Válassz feladatot!</div>
+			<div class="gombdoboz" visibility="hidden">
+				<button onclick="kezdes(7)">7</button>
+				<button onclick="kezdes(8)">8</button>
+				<button onclick="kezdes(9)">9</button>
+				<button onclick="kezdes(10)">10</button>
+				<button onclick="kezdes(11)">11</button>
+				<button onclick="kezdes(12)">12</button>
+				<button onclick="kezdes(13)">13</button>
+				<button onclick="kezdes(14)">14</button>
+				<button onclick="kezdes(15)">15</button>
+				<button onclick="kezdes(16)">16</button>
+			</div>
+		</div>
+		<section class="adat_tabla">
+			<div class="leiras">Játék Leírás</div>
+				<p>A játék során karaktereddel kell az egered segítségével adott gépeket megkeresned. A játék során csak fel, le, balra vagy jobbra mozoghatsz. A célod, hogy a piros mezőkre lépve minnél gyorsabban feltörd a megjelölt gépeknek a jelszavát.</p>
+		</section>
+	</body>
+</html>

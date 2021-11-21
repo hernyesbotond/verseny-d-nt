@@ -1,0 +1,37 @@
+html{
+    scroll-behavior: smooth;
+}
+
+body{
+    background: #CCCCCC;
+}
+
+button {
+    background-color: lightgray;
+    cursor: pointer;
+    width: 10%;
+    border: none;
+    border-radius: 4px;
+    margin: 10px;
+    padding: 3px;
+}
+
+button:enabled {
+    background-color: dodgerblue;
+}
+
+.doboz {
+    text-align: center;
+}
+
+.jelszo_doboz {
+    font-size: 16px;
+}
+
+#username {
+    margin: 10px;
+}
+
+@media only screen and (max-width: 550px){
+
+}

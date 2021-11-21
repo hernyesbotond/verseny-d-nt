@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+
+	<head>
+		<title>Második Feladat &#129421;&#128563;</title>
+	
+		<script src="jquery/jquery-1.8.2.js" type="text/javascript">
+		</script>
+		
+		<script src="jquery/jquery-ui-1.9.1.custom.js" type="text/javascript">
+		</script>
+		
+		<link rel="stylesheet" href="jquery/jquery-ui-1.9.1.custom.css" type="text/css">
+
+		<link rel="stylesheet" href="css/feladat2.css" type="text/css">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		
+		<link rel="icon" href="images/favicon.ico" type="image/x-icon">
+
+		<link rel="apple-touch-icon" href="images/favicon.ico">
+		
+	</head>
+    <body>
+        <div class="doboz">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" oninput="usernameChanged(this.value)"><br>
+            <div class="jelszo_doboz"></div>
+            <button id="loginbutton" disabled="true">Jelszó küldése</button>
+        </div>
+
+		<script>
+            var jelszo;
+            var nev;
+            $(document).ready(
+            function()
+            {
+                $("#loginbutton").click(
+                function()
+                {
+                    bejelentkezes(nev, jelszo);
+                });
+            });
+            
+            function usernameChanged(newtext)
+			{
+                nev = newtext;
+				var xhttp = new XMLHttpRequest();
+				xhttp.onreadystatechange=function() {
+					if (this.readyState == 4 && this.status == 200)
+                    {
+						ansobj=JSON.parse(this.responseText);
+						if (ansobj.status==="success")
+						{
+							mixedpwd=ansobj.data.mixedpwd;
+                            getMixedValue(mixedpwd);
+						}
+						else
+						{
+                            $(".jelszo_doboz").empty();
+                            document.getElementById("loginbutton").disabled = true;
+							mixedpwd=null;
+						}
+						//pwdChanged(document.getElementById("pwd").value);
+					}
+				};
+				xhttp.open("POST", "http://bitkozpont.mik.uni-pannon.hu/2021/loginchecker.php", true);
+				xhttp.send(JSON.stringify({
+					action: "getuserhelp",
+					username: newtext
+				}));
+			}
+            
+            function bejelentkezes(nev, jelszo)
+			{
+				var xhttp = new XMLHttpRequest();
+				xhttp.open("POST","http://bitkozpont.mik.uni-pannon.hu/2021/loginchecker.php",true);
+				xhttp.send(JSON.stringify({
+					action: "solve",
+					teamcode: "b45e7b1c2ba70abf98f8",
+					username: nev,
+					pwd: jelszo
+				}));
+			}
+
+            function getMixedValue(temp)
+			{
+				var mixedvalue = temp.split('');
+				for (var i=0; i<mixedvalue.length/2; i++)
+				{
+					if (i%2==0)
+					{
+						var tmp=mixedvalue[i];
+						mixedvalue[i]=mixedvalue[mixedvalue.length-1-i];
+						mixedvalue[mixedvalue.length-1-i]=tmp;
+					}
+				}
+				jelszo = mixedvalue.join('');
+                $(".jelszo_doboz").html("A jelszó: " + jelszo);
+                document.getElementById("loginbutton").disabled = false;
+			}
+
+        </script>
+    </body>
+</html>
